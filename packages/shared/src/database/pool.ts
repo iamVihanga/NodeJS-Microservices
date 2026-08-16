@@ -10,7 +10,9 @@ export function getPool(): Pool {
       throw new Error("Database connection URL is not found !");
     }
 
-    pool = new Pool({ connectionString });
+    pool = new Pool({
+      connectionString
+    });
   }
 
   return pool;

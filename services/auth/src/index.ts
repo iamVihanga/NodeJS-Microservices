@@ -9,6 +9,8 @@ import {
   successResponse
 } from "shared";
 
+import authRoutes from "./routes/auth.routes";
+
 // Dotenv Configurations
 dotenvConfig({ path: resolve(process.cwd(), ".env") });
 dotenvConfig({ path: resolve(process.cwd(), "../../.env") });
@@ -24,6 +26,8 @@ app.use(express.json());
 app.get("/health", (_req, res) => {
   successResponse(res, { service: "auth-service" });
 });
+
+app.use("/auth", authRoutes);
 
 app.use((_req, _res, next) => {
   next(new AppError(400, "Resource not found"));

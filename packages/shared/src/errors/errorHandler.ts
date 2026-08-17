@@ -8,13 +8,13 @@ export function errorHandler(
   _next: NextFunction
 ) {
   if (error instanceof AppError) {
+    // logger.error(error.message);
+
     return res.status(error.statusCode).json({
       success: false,
       message: error.message
     });
   }
-
-  // TODO: logger.error
 
   return res.status(500).json({
     success: false,

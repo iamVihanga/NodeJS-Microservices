@@ -1,8 +1,10 @@
 import { AppError } from "shared";
-import { createUser, findByEmail } from "../repositories/user.repo";
-import { type RegisterInput } from "../schemas/auth.schemas";
+import { createUser, findByEmail, findById } from "../repositories/user.repo";
+import { type LoginInput, type RegisterInput } from "../schemas/auth.schemas";
 import bcrypt from "bcryptjs";
 import { convertToPublicUser } from "../utils/auth.utils";
+import { userInfo } from "node:os";
+import { signToken } from "../utils/jwt";
 
 export async function register(input: RegisterInput) {
   const existing = await findByEmail(input.email);
@@ -20,4 +22,36 @@ export async function register(input: RegisterInput) {
   });
 
   return convertToPublicUser(user);
+}
+
+export async function login(input: LoginInput) {
+  const existingUser = await findByEmail(input.email);
+
+  if (!existingUser) throw new AppError(401, "Invalid email or password");
+
+  const valid = await bcrypt.compare(
+    input.password,
+    existingUser.password_hash
+  );
+
+  if (!valid) throw new AppError(401, "Invalid email or password");
+
+  const token = signToken({
+    userId: existingUser.id,
+    role: existingUser.role,
+    name: existingUser.name
+  });
+
+  return {
+    token,
+    user: convertToPublicUser(existingUser)
+  };
+}
+
+export async function getMe(userId: string) {
+  const existingUser = await findById(userId);
+
+  if (!existingUser) throw new AppError(401, "User not found");
+
+  return convertToPublicUser(existingUser);
 }

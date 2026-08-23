@@ -24,3 +24,9 @@ export interface CreateUserInput {
   passwordHash: string;
   role?: UserRole;
 }
+
+export type JwtPayload = {
+  name: string;
+  userId: string;
+  role: string;
+};

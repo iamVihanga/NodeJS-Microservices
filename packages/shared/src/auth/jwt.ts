@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import type { JwtPayload } from "../types/auth.types";
+import type { JwtPayload } from "./types";
 
 export function extractJwtSecret(): string {
   const jwtSecret = process.env.JWT_SECRET;
@@ -20,4 +20,24 @@ export function signToken(payload: JwtPayload) {
   const expiresIn = extractExpiresIn();
 
   return jwt.sign(payload, jwtSecret, { expiresIn });
+}
+
+export function verifyToken(token: string): JwtPayload {
+  const decodedToken = jwt.verify(token, extractJwtSecret());
+
+  console.log(typeof decodedToken, decodedToken);
+
+  if (
+    typeof decodedToken !== "object" ||
+    decodedToken === null ||
+    typeof decodedToken.userId !== "string"
+  ) {
+    throw new Error("Invalid token payload");
+  }
+
+  return {
+    userId: decodedToken.userId,
+    name: decodedToken.name,
+    role: decodedToken.role
+  };
 }

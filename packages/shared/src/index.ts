@@ -14,3 +14,8 @@ export { failResponse, successResponse } from "./response/response";
 
 // Validation
 export { validateBody } from "./validation/validateBody";
+
+// Auth Service Related
+export type { UserRole, JwtPayload } from "./auth/types";
+export { requireGatewaySecret } from "./auth/gatewayAuth";
+export { signToken, verifyToken } from "./auth/jwt";

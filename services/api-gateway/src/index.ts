@@ -12,6 +12,7 @@ import {
   successResponse
 } from "shared";
 import { createProxyMiddleware } from "http-proxy-middleware";
+import { gatewayAuth } from "./middlewares/gatewayAuth";
 
 // Dotenv Configurations
 config({ path: resolve(process.cwd(), ".env") });
@@ -48,6 +49,7 @@ app.use("/health", (_req, res) => {
 // -- Forward anything from "http://localhost:3000/auth/*" -> "http://localhost:3001/api/*"
 app.use(
   "/auth",
+  gatewayAuth,
   createProxyMiddleware({
     target: AUTH_SERVICE_URL,
     changeOrigin: true,

@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import * as taskService from "../services/task.services";
 import { requireIdentity } from "../utils/task.utils";
-import { successResponse } from "shared";
+import { successResponse, UserRole } from "shared";
 
 export async function createTask(
   req: Request,
@@ -14,6 +14,40 @@ export async function createTask(
     const task = await taskService.createTask(req.body, userId);
 
     return successResponse(res, { task }, 201);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function listTasks(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { userId, role } = requireIdentity(req);
+
+    const tasks = await taskService.listTasks(userId, role as UserRole);
+
+    return successResponse(res, { tasks });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getTask(req: Request, res: Response, next: NextFunction) {
+  try {
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deleteTask(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
   } catch (error) {
     next(error);
   }

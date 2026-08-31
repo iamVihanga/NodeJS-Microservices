@@ -6,5 +6,6 @@ import * as taskController from "../controllers/task.controllers";
 const router = Router();
 
 router.post("/", validateBody(createTaskSchema), taskController.createTask);
+router.get("/", taskController.listTasks);
 
 export default router;

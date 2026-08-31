@@ -22,6 +22,11 @@ export const RBACRules: RBACRule[] = [
     method: "GET",
     path: "/auth/me",
     roles: ["USER", "ADMIN"]
+  },
+  {
+    method: "POST",
+    path: "/tasks",
+    roles: ["USER", "ADMIN"]
   }
 ];
 

@@ -25,8 +25,6 @@ export function signToken(payload: JwtPayload) {
 export function verifyToken(token: string): JwtPayload {
   const decodedToken = jwt.verify(token, extractJwtSecret());
 
-  console.log(typeof decodedToken, decodedToken);
-
   if (
     typeof decodedToken !== "object" ||
     decodedToken === null ||

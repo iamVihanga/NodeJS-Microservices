@@ -37,6 +37,12 @@ export async function listTasks(
 
 export async function getTask(req: Request, res: Response, next: NextFunction) {
   try {
+    const { userId, role } = requireIdentity(req);
+    const id = String(req.params.id);
+
+    const task = await taskService.getTask(id, userId, role as UserRole);
+
+    return successResponse(res, { task });
   } catch (error) {
     next(error);
   }

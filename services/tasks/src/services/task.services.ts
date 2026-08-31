@@ -20,3 +20,15 @@ export async function listTasks(userId: string, role: UserRole) {
 
   return tasks.map(convertToPublicTask);
 }
+
+export async function getTask(id: string, userId: string, role: UserRole) {
+  const task = await taskRepository.findTaskById(id);
+
+  if (!task) throw new AppError(404, "Task not found");
+
+  if (role !== "ADMIN" && task.created_by !== userId) {
+    throw new AppError(403, "Forbidden");
+  }
+
+  return convertToPublicTask(task);
+}

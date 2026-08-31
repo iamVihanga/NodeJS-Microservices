@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import * as taskService from "../services/task.services";
 import { requireIdentity } from "../utils/task.utils";
-import { successResponse, UserRole } from "shared";
+import { failResponse, successResponse, UserRole } from "shared";
 
 export async function createTask(
   req: Request,
@@ -54,6 +54,20 @@ export async function deleteTask(
   next: NextFunction
 ) {
   try {
+    const { userId, role } = requireIdentity(req);
+    const id = String(req.params.id);
+
+    const deleteResult = await taskService.deleteTask(
+      id,
+      userId,
+      role as UserRole
+    );
+
+    if (deleteResult) {
+      return successResponse(res, { message: "Task deleted successfully !" });
+    }
+
+    return failResponse(res, "Failed to delete task");
   } catch (error) {
     next(error);
   }

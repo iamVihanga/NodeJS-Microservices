@@ -32,3 +32,15 @@ export async function getTask(id: string, userId: string, role: UserRole) {
 
   return convertToPublicTask(task);
 }
+
+export async function deleteTask(id: string, userId: string, role: UserRole) {
+  const existingTask = await taskRepository.findTaskById(id);
+
+  if (!existingTask) throw new AppError(404, "Task not found");
+
+  if (role !== "ADMIN" && existingTask.created_by !== userId) {
+    throw new AppError(403, "Forbidden");
+  }
+
+  return await taskRepository.deleteTaskById(id);
+}

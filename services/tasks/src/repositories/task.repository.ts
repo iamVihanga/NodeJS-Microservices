@@ -1,5 +1,6 @@
-import { getPool } from "shared";
+import { AppError, getPool } from "shared";
 import type { CreateTaskInput, ListTasksInput, Task } from "../utils/types";
+import { UpdateTaskSchema } from "../schemas/task.schemas";
 
 export async function createTask(input: CreateTaskInput): Promise<Task> {
   const result = await getPool().query<Task>(
@@ -57,4 +58,24 @@ export async function deleteTaskById(id: string): Promise<boolean> {
   const result = await getPool().query(`DELETE FROM tasks WHERE id = $1`, [id]);
 
   return (result.rowCount ?? 0) > 0;
+}
+
+export async function updateTaskById(id: string, input: UpdateTaskSchema) {
+  const { rows } = await getPool().query<Task>(
+    `
+      UPDATE tasks
+      SET title       = COALESCE($1, title),
+          status      = COALESCE($2, status),
+          updated_at  = NOW()
+      WHERE id = $3
+      RETURNING *;
+    `,
+    [input.title ?? null, input.status ?? null, id]
+  );
+
+  if (rows.length < 1) {
+    throw new AppError(404, "Task not found");
+  }
+
+  return rows[0];
 }

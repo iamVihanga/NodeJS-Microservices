@@ -1,4 +1,4 @@
-import { CreateTaskSchema } from "../schemas/task.schemas";
+import { CreateTaskSchema, UpdateTaskSchema } from "../schemas/task.schemas";
 import * as taskRepository from "../repositories/task.repository";
 import { PublicTask } from "../utils/types";
 import { convertToPublicTask } from "../utils/task.utils";
@@ -43,4 +43,23 @@ export async function deleteTask(id: string, userId: string, role: UserRole) {
   }
 
   return await taskRepository.deleteTaskById(id);
+}
+
+export async function updateTask(
+  id: string,
+  input: UpdateTaskSchema,
+  userId: string,
+  role: UserRole
+) {
+  const existingTask = await taskRepository.findTaskById(id);
+
+  if (!existingTask) throw new AppError(404, "Task not found");
+
+  if (role !== "ADMIN" && existingTask.created_by !== userId) {
+    throw new AppError(403, "Forbidden");
+  }
+
+  const updatedTask = await taskRepository.updateTaskById(id, input);
+
+  return convertToPublicTask(updatedTask);
 }

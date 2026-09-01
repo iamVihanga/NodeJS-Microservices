@@ -5,3 +5,14 @@ export const createTaskSchema = z.object({
 });
 
 export type CreateTaskSchema = z.infer<typeof createTaskSchema>;
+
+export const updateTaskSchema = z
+  .object({
+    title: z.string(),
+    status: z.literal(["OPEN", "IN_PROGRESS", "RESOLVED", "CLOSED"], {
+      error: "Invalid status value"
+    })
+  })
+  .partial();
+
+export type UpdateTaskSchema = z.infer<typeof updateTaskSchema>;

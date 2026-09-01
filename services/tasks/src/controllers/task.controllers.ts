@@ -72,3 +72,28 @@ export async function deleteTask(
     next(error);
   }
 }
+
+export async function updateTask(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { userId, role } = requireIdentity(req);
+
+    const id = String(req.params.id);
+    const body = req.body;
+
+    const updatedTask = await taskService.updateTask(
+      id,
+      body,
+      userId,
+      role as UserRole
+    );
+
+    return successResponse(res, { task: updatedTask });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+}

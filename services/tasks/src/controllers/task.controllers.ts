@@ -1,7 +1,11 @@
 import type { Request, Response, NextFunction } from "express";
 import * as taskService from "../services/task.services";
-import { requireIdentity } from "../utils/task.utils";
-import { failResponse, successResponse, UserRole } from "shared";
+import {
+  failResponse,
+  successResponse,
+  UserRole,
+  requireIdentity
+} from "shared";
 
 export async function createTask(
   req: Request,

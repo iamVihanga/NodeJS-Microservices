@@ -19,3 +19,4 @@ export { validateBody } from "./validation/validateBody";
 export type { UserRole, JwtPayload } from "./auth/types";
 export { requireGatewaySecret } from "./auth/gatewayAuth";
 export { signToken, verifyToken } from "./auth/jwt";
+export * from "./auth/utils";

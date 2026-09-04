@@ -24,6 +24,8 @@ const AUTH_SERVICE_URL =
   process.env.AUTH_SERVICE_URL || "http://localhost:3001";
 const TASK_SERVICE_URL =
   process.env.TASK_SERVICE_URL || "http://localhost:3002";
+const MEDIA_SERVICE_URL =
+  process.env.MEDIA_SERVICE_URL || "http://localhost:3003";
 
 // Server
 const app = express();
@@ -60,16 +62,27 @@ app.use(
 );
 
 // 2. Task Proxy
-// --- Forward anything from "http://localhost:3000/tasks/*" -> "http://localhost:3002/tasks/*"
-app.use(
-  "/tasks",
-  gatewayAuth,
-  createProxyMiddleware({
-    target: TASK_SERVICE_URL,
-    changeOrigin: true,
-    pathRewrite: (path) => `/tasks${path}`
-  })
-);
+
+const taskProxy = createProxyMiddleware({
+  target: TASK_SERVICE_URL,
+  changeOrigin: true,
+  pathRewrite: (path) => `/tasks${path}`
+});
+
+const mediaProxy = createProxyMiddleware({
+  target: MEDIA_SERVICE_URL,
+  changeOrigin: true,
+  pathRewrite: (path) => `/tasks${path}`
+});
+
+app.use("/tasks", gatewayAuth, (req, res, next) => {
+  console.log(req.path);
+  if (req.path.includes("/attachments")) {
+    return mediaProxy(req, res, next);
+  }
+
+  return taskProxy(req, res, next);
+});
 
 // Error Catching
 app.use((_req, res, next) => {

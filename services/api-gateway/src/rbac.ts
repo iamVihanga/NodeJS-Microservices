@@ -47,6 +47,11 @@ export const RBACRules: RBACRule[] = [
     method: "PUT",
     path: "/tasks/:id",
     roles: ["ADMIN", "USER"]
+  },
+  {
+    method: "POST",
+    path: "/tasks/:taskId/attachments",
+    roles: ["ADMIN", "USER"]
   }
 ];
 

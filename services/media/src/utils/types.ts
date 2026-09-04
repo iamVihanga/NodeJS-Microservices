@@ -7,6 +7,15 @@ export type Attachment = {
   created_at: Date;
 };
 
+export type PublicAttachment = {
+  id: string;
+  taskId: string;
+  imageUrl: string;
+  publicId: string;
+  uploadedBy: string;
+  createdAt: Date;
+};
+
 export type CreateAttachmentInput = {
   taskId: string;
   imageUrl: string;

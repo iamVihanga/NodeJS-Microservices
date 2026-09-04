@@ -6,8 +6,11 @@ import {
   errorHandler,
   httpLogger,
   logger,
+  requireGatewaySecret,
   successResponse
 } from "shared";
+
+import mediaRoutes from "./routes/media.routes";
 
 // Dotenv Configurations
 dotenvConfig({ path: resolve(process.cwd(), ".env") });
@@ -24,6 +27,8 @@ app.use(express.json());
 app.get("/health", (_req, res) => {
   successResponse(res, { service: "media-service" });
 });
+
+app.use("/tasks", requireGatewaySecret, mediaRoutes);
 
 app.use((_req, _res, next) => {
   next(new AppError(400, "Resource not found"));
